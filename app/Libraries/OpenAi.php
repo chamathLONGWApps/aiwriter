@@ -4,7 +4,12 @@ namespace App\Libraries;
 
 class OpenAi
 {
-    private $apiKey = $_ENV['openAiKey'];
+    private $apiKey;
+
+    public function __construct()
+    {
+        $this->apiKey = getenv("openAiKey");
+    }
 
     public function createComplition($prompt) 
     {
@@ -41,7 +46,7 @@ class OpenAi
         } else {
             if ($retries < 3)
                 $this->doPost($url, $headers, $body, $retries);
-            return [true, $error_msg];
+            return [true, ['http code' => $httpCode, 'error' => $error_msg, 'response' => $response]];
         }
     }
 

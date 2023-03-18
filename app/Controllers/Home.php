@@ -30,17 +30,15 @@ class Home extends BaseController
             if ($handle === FALSE)
                 return $this->sendJSON(400, 'Error occurred while reading the file.');
             $row = 1;
-            $filePrompts = [];
             while (($data = fgetcsv($handle)) !== FALSE) {
+                $filePrompts = [];
                 if ($row !== 1) {
                     $filePrompts['file_id'] = $insertId;
                     $filePrompts['topic'] = $data[0];
                     $filePrompts['prompt'] = $data[1];
+                    $filePromptsModel->insert($filePrompts);
                 }
                 $row++;
-            }
-            if (!empty($filePrompts)) {
-                $filePromptsModel->insert($filePrompts);
             }
             unlink($path);
          }

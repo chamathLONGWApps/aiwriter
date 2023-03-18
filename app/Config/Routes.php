@@ -32,6 +32,7 @@ $routes->set404Override();
 $routes->get('/', 'Home::index');
 $routes->post('/upload', 'Home::uploadCSV');
 $routes->get('test', 'Home::test');
+$routes->get('cron', 'Cron::processFile');
 
 /*
  * --------------------------------------------------------------------
