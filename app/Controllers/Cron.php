@@ -6,10 +6,15 @@ class Cron extends BaseController
 {
     public function processFile() 
     {
+        log_message('debug', 'cron running');
         $openAi = new \App\Libraries\OpenAi();
         $fileModel = new \App\Models\FileModel();
         $filePromptModel = new \App\Models\FilePromptsModel();
-        $csv = new \App\Libraries\CSV();
+        $next = $fileModel->getNextFileToProcess();
+        if(!empty($next)){
+            log_message('debug', 'has running prompt');
+            die;
+        }
         $res = $fileModel->getFilePrompt();
         if (empty($res)){
             log_message('debug', 'dying');

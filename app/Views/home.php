@@ -9,14 +9,14 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="css/styles.css">
-    <script src="js/script.js"></script>
-    <script src="js/app.js"></script>
+    <link rel="stylesheet" href="http://aicontent2.com/css/styles.css">
+    <script src="http://aicontent2.com/js/script.js"></script>
+    <script src="http://aicontent2.com/js/app.js"></script>
     <title>Article writer</title>
 </head>
 
 <body>
-    <div class="card">
+    <div class="card m-2">
         <?php if (!empty($errors)) : ?>
             <?php foreach ($errors as $error) : ?>
                 <li><?= esc($error) ?></li>
@@ -38,6 +38,36 @@
         </div>
     </div>
 
+    <div class="card m-2">
+        <div class="card-header">Files in storage</div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">File Name</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Created at</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($files)) : ?>
+                        <?php foreach ($files as $file) : ?>
+                            <?php $disabled = ($file['status'] !== 'completed') ? 'disabled' : ''; ?>
+                            <tr>
+                                <td><?php echo $file['name']; ?></td>
+                                <td><?php echo $file['status']; ?></td>
+                                <td><?php echo $file['created_at']; ?></td>
+                                <td><button data-disabled="<?php echo $disabled; ?>" data-downloadurl="<?php echo base_url() . "download/" . $file['id'] ?>" type="button" <?php echo $disabled; ?> class="btn btn-success download">Download</button></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div id="alert-container">
     </div>
     <!-- loader -->
@@ -51,9 +81,17 @@
 </body>
 
 <script>
-    // $(function() {
-    //     app.initHome()
-    // })
+    $(function() {
+        $(".download").click(function() {
+            let disabled = $(this).data('disabled')
+            let downloadurl = $(this).data('downloadurl')
+            console.log(downloadurl);
+            console.log(disabled);
+            if(!disabled){
+                window.open(downloadurl, "_blank")
+            }
+        })
+    })
 </script>
 
 </html>

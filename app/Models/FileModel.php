@@ -23,6 +23,15 @@ class FileModel extends Model
 
     protected $filePrompt = 'file_prompts';
 
+    public function getNextFileToProcess() {
+        return $this->db->table("{$this->table} f")
+            ->select("f.id")
+            ->join("{$this->filePrompt} fp", "f.id = fp.file_id", "INNER")
+            ->where("(f.status = 'inprogress' OR f.status = 'pending')")
+            ->where(['fp.status' => 'inprogress'])
+            ->get()->getRow();
+    }
+
     public function getFilePrompt()
     {
         $this->db->transBegin();

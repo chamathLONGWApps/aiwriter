@@ -30,9 +30,10 @@ $routes->set404Override();
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
-$routes->post('/upload', 'Home::uploadCSV');
+$routes->post('upload', 'Home::uploadCSV');
 $routes->get('test', 'Home::test');
-$routes->get('cron', 'Cron::processFile');
+$routes->cli('cron', 'Cron::processFile');
+$routes->get('download/([0-9]+)', 'Home::downloadFile/$1');
 
 /*
  * --------------------------------------------------------------------

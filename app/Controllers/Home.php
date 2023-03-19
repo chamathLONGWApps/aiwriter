@@ -2,16 +2,21 @@
 
 namespace App\Controllers;
 
+use App\Models\FileModel;
+
 class Home extends BaseController
 {
     public function index()
     {
-        return view('home');
+        $fileModel = new \App\Models\FileModel();
+        $files = $fileModel->orderBy('created_at', 'DESC')->findAll();
+        return view('home', ['files' => $files]);
     }
 
     public function uploadCSV()
     {
-        $csv = new \App\Libraries\CSV();
+        log_message('debug', 'upload csv');
+        // $csv = new \App\Libraries\CSV();
         $fileModel = new \App\Models\FileModel();
         $filePromptsModel = new \App\Models\FilePromptsModel();
         $file = $this->request->getFile('file');
@@ -42,7 +47,7 @@ class Home extends BaseController
             }
             unlink($path);
          }
-        return redirect()->to("/");
+        return redirect()->to(base_url());
 
     }
 
@@ -57,9 +62,24 @@ class Home extends BaseController
         return in_array($mimeType, $validMimeTypes);
     }
 
-    public function cron()
+    public function downloadFile($fileId) 
     {
-        $ws = new \App\Libraries\OpenAi();
-        list($hasError, $resp) = $ws->createComplition("Write a 200 to 300 word article about tree trimming.");
+        $filesModel = new \App\Models\FileModel();
+        $filePromptsModel = new \App\Models\FilePromptsModel();
+        $csv = new \App\Libraries\Csv();
+        $fileData = $filesModel->where(['id' => $fileId])->first();
+        $fileContent = $filePromptsModel->where(['file_id' => $fileId])->findAll();
+        // $path = WRITEPATH . 'uploads/' . $fileData['name'];
+        $csvData = [];
+        foreach($fileContent as $key => $content) {
+            $csvData[$key][] = $content['topic']; 
+            $csvData[$key][] = $content['prompt']; 
+            $csvData[$key][] = $content['result']; 
+        }
+        return $csv->download_csv($fileData['name'], ['topic', 'prompt', 'result'], $csvData);
+    }
+
+    public function test(){
+        echo "home";
     }
 }
