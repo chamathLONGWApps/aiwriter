@@ -48,6 +48,7 @@
                         <th scope="col">Status</th>
                         <th scope="col">Created at</th>
                         <th scope="col"></th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,6 +59,12 @@
                                 <td><?php echo $file['name']; ?></td>
                                 <td><?php echo $file['status']; ?></td>
                                 <td><?php echo $file['created_at']; ?></td>
+                                <td>
+                                    <span class="badge bg-secondary">Total : <?php echo $file['total']; ?></span><br>
+                                    <span class="badge bg-warning">Inprogress : <?php echo $file['inprogress']; ?></span><br>
+                                    <span class="badge bg-primary">Pending : <?php echo $file['pending']; ?></span><br>
+                                    <span class="badge bg-success">Completed : <?php echo $file['completed']; ?></span>
+                                </td>
                                 <td><button data-disabled="<?php echo $disabled; ?>" data-downloadurl="<?php echo base_url() . "download/" . $file['id'] ?>" type="button" <?php echo $disabled; ?> class="btn btn-success download">Download</button></td>
                             </tr>
                         <?php endforeach; ?>
@@ -87,7 +94,7 @@
             let downloadurl = $(this).data('downloadurl')
             console.log(downloadurl);
             console.log(disabled);
-            if(!disabled){
+            if (!disabled) {
                 window.open(downloadurl, "_blank")
             }
         })

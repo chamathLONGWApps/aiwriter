@@ -9,7 +9,16 @@ class Home extends BaseController
     public function index()
     {
         $fileModel = new \App\Models\FileModel();
+        $filePromptsModel = new \App\Models\FilePromptsModel();
         $files = $fileModel->orderBy('created_at', 'DESC')->findAll();
+
+        foreach($files as $key=>$file) {
+            $files[$key]['total'] = $filePromptsModel->where(['file_id' => $file['id']])->countAllResults();
+            $files[$key]['pending'] = $filePromptsModel->where(['file_id' => $file['id'], 'status' => 'pending'])->countAllResults();
+            $files[$key]['completed'] = $filePromptsModel->where(['file_id' => $file['id'], 'status' => 'completed'])->countAllResults();
+            $files[$key]['inprogress'] = $filePromptsModel->where(['file_id' => $file['id'], 'status' => 'inprogress'])->countAllResults();
+        }
+
         return view('home', ['files' => $files]);
     }
 

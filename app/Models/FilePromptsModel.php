@@ -39,4 +39,12 @@ class FilePromptsModel extends Model{
         } 
     }
 
+    public function getPrompt($fileStatus, $promptStatus)
+    {
+        return $this->db->table("{$this->files} f")
+        ->select('f.id, fp.id fpId, fp.prompt')
+        ->where(['f.status' => $fileStatus])
+        ->join("{$this->table} fp", 'f.id = fp.file_id', "INNER")
+        ->where(['fp.status' => $promptStatus])->get()->getRow();
+    }
 }

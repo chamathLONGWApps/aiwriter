@@ -34,6 +34,7 @@ $routes->post('upload', 'Home::uploadCSV');
 $routes->get('test', 'Home::test');
 $routes->cli('cron', 'Cron::processFile');
 $routes->get('download/([0-9]+)', 'Home::downloadFile/$1');
+$routes->get('cronTest', 'Cron::processFileSecond');
 
 /*
  * --------------------------------------------------------------------
