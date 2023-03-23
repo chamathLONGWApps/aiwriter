@@ -13,10 +13,12 @@ class OpenAi
 
     public function createComplition($prompt) 
     {
-        $endpoint = "https://api.openai.com/v1/completions";
+        $endpoint = "https://api.openai.com/v1/chat/completions";
         $body = [
-            "model" => "text-davinci-003",
-            "prompt" => $prompt,
+            "model" => "gpt-3.5-turbo",
+            "messages" => [
+                ["role" => "user", "content" => $prompt]
+            ],
             "max_tokens" => 3000
         ];
         $headers = [

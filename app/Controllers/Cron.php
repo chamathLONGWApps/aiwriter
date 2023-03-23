@@ -23,7 +23,7 @@ class Cron extends BaseController
         list($hasError, $opRes) = $openAi->createComplition($res->prompt);
         try {
             if (!$hasError) {
-                $filePromptModel->saveArticle($res->id, $res->fpId, $opRes->choices[0]->text);
+                $filePromptModel->saveArticle($res->id, $res->fpId, $opRes->choices[0]->message->content);
             } else {
                 $filePromptModel->saveArticle($res->id, $res->fpId, "API Error occured!");
                 log_message('error', 'API error');

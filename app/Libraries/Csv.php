@@ -77,10 +77,12 @@ class CSV {
 	public function download_csv($filename, $header, $data)
 	{
 		// output headers so that the file is downloaded rather than displayed
+		// header('Content-Encoding: UTF-8');
 		header('Content-Type: text/csv; charset=utf-8');
 		header("Content-Disposition: attachment; filename={$filename}");
 		// create a file pointer connected to the output stream
 		$output = fopen('php://output', 'w');
+		// fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
         fputcsv($output, $header);
         foreach($data as $row){
             fputcsv($output, $row);

@@ -12,7 +12,7 @@ class Home extends BaseController
         $filePromptsModel = new \App\Models\FilePromptsModel();
         $files = $fileModel->orderBy('created_at', 'DESC')->findAll();
 
-        foreach($files as $key=>$file) {
+        foreach ($files as $key => $file) {
             $files[$key]['total'] = $filePromptsModel->where(['file_id' => $file['id']])->countAllResults();
             $files[$key]['pending'] = $filePromptsModel->where(['file_id' => $file['id'], 'status' => 'pending'])->countAllResults();
             $files[$key]['completed'] = $filePromptsModel->where(['file_id' => $file['id'], 'status' => 'completed'])->countAllResults();
@@ -55,9 +55,8 @@ class Home extends BaseController
                 $row++;
             }
             unlink($path);
-         }
+        }
         return redirect()->to(base_url());
-
     }
 
     private function isValidMimeType($file = null)
@@ -71,7 +70,7 @@ class Home extends BaseController
         return in_array($mimeType, $validMimeTypes);
     }
 
-    public function downloadFile($fileId) 
+    public function downloadFile($fileId)
     {
         $filesModel = new \App\Models\FileModel();
         $filePromptsModel = new \App\Models\FilePromptsModel();
@@ -80,15 +79,20 @@ class Home extends BaseController
         $fileContent = $filePromptsModel->where(['file_id' => $fileId])->findAll();
         // $path = WRITEPATH . 'uploads/' . $fileData['name'];
         $csvData = [];
-        foreach($fileContent as $key => $content) {
-            $csvData[$key][] = $content['topic']; 
-            $csvData[$key][] = $content['prompt']; 
-            $csvData[$key][] = $content['result']; 
+        foreach ($fileContent as $key => $content) {
+            // log_message("error", print_r($content, true));
+            $csvData[$key][] = $content['topic'];
+            $csvData[$key][] = $content['prompt'];
+            $csvData[$key][] = $content['result'];
         }
         return $csv->download_csv($fileData['name'], ['topic', 'prompt', 'result'], $csvData);
     }
 
-    public function test(){
-        echo "home";
+    public function test()
+    {
+        $openAi = new \App\Libraries\OpenAi();
+        $prompt = "My company is called Buckeye Builds and we specialize in manufacturing and installing metal roofs. Please write a 300-400 word article about my company while mentioning metal roofs at least 5 times in the artile. Also please include unique facts about New Bremen Ohio";
+        list($hasError, $opRes) = $openAi->createComplition($prompt);
+        log_message('error', print_r($opRes, true));
     }
 }
