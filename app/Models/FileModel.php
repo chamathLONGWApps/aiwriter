@@ -26,14 +26,14 @@ class FileModel extends Model
 
     public function getNextFileToProcess() {
         return $this->db->table("{$this->table} f")
-            ->select("f.id")
+            ->select("f.id, fp.updated_at")
             ->join("{$this->filePrompt} fp", "f.id = fp.file_id", "INNER")
             ->where("(f.status = 'inprogress' OR f.status = 'pending')")
             ->where(['fp.status' => 'inprogress'])
             ->get()->getRow();
     }
 
-    public function getFilePrompt()
+    public function getFilePrompt($fpStatus)
     {
         $this->db->transBegin();
 
@@ -41,7 +41,7 @@ class FileModel extends Model
             ->select("f.id, f.name, f.status, fp.id fpId, fp.status fpStatus, fp.topic, fp.prompt")
             ->join("{$this->filePrompt} fp", "f.id = fp.file_id", "INNER")
             ->where("(f.status = 'inprogress' OR f.status = 'pending')")
-            ->where(['fp.status' => 'pending'])
+            ->where(['fp.status' => $fpStatus])
             ->get()->getRow();
         if (!empty($res)) {
             $this->db->table($this->table)->set(['status' => 'inprogress'])->where(['id' => $res->id])->update();
